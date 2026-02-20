@@ -1,0 +1,151 @@
+body {
+ /* Set line height to 1.5 times the font size
+    and use the OS’s UI font as the website font
+  */
+ font: 100%/1.5 system-ui;
+ max-width: 100ch;
+ margin-inline: 5% 10%;
+ padding-inline: 1em;
+ accent-color: var(--color-accent);
+ margin-inline: auto;
+}
+
+nav ul,
+nav li {
+  display: contents;
+}
+nav {
+  display: flex;
+  margin-bottom: 1.5em;
+  border-bottom: 1px solid oklch(77.65% 0.03264 291.562);
+}
+nav a {
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  padding: 0.5em 0.5em 0.6em;
+  margin-bottom: 2px;
+}
+
+nav a.current {
+  border-bottom: 0.4em solid oklch(77.65% 0.03264 291.562);
+}
+
+nav a:hover {
+  border-bottom: 0.6em solid var(--color-accent);
+  background-color: oklch(from var(--color-accent) 95% 5% h);
+  padding-bottom: 0.1em;
+}
+
+:root {
+  --color-accent: oklch(70% 35% 300); /* light purple */
+}
+
+html {
+  accent-color: var(--color-accent);
+}
+
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+}
+
+label {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1/-1;
+}
+
+input, textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+button {
+  grid-column: 1/-1;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+}
+
+article {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+}
+h2 {
+  margin: 0;
+}
+
+h1 {
+  font-size: 400%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.1;
+  text-wrap: balance;
+}
+h1 {
+  overflow-wrap: break-word;
+}
+
+section {
+  padding-bottom: 2.5em;
+  margin-bottom: 3em; 
+  border-bottom: 2px solid oklch(32.568% 0.22454 264.604);
+}
+article {
+  margin-bottom: 1.75em;
+}
+
+article > header {
+  margin-bottom: 0.25em;
+}
+
+article h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+article header p {
+  margin: 0.15em 0;
+  font-size: 0.95em;
+  color: oklch(50% 0.15 271);
+}
+
+article > p {
+  margin: 0.5em 0 0.5em;
+  font-size: 0.9em;
+  color: oklch(55% 3% 200);
+}
+article ul {
+  margin: 0.5em 0 0;
+  padding-left: 1.2em;
+}
+
+article li {
+  margin-bottom: 0.4em;
+}
+   
+section {
+  margin-bottom: 2.5em;
+}
+ 
+section > h2 {
+  margin-bottom: 1em;
+}
+article:not(:last-child) {
+  border-bottom: 1px solid oklch(90% 0.02 200);
+  padding-bottom: 1.25em;
+}
