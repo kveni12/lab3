@@ -3,11 +3,11 @@
 </script>
 
 <article>
+    <img src={data.image} alt={data.title}>
     <div class="text">
         <h2>{data.title}</h2>
         <p class="author">by {data.author}</p>
     </div>
-    <img src={data.image} alt={data.title}>
 </article>
 
 <style>
@@ -15,7 +15,7 @@
 article {
     display: flex;
     align-items: flex-start;
-    gap: 1.5em;           /* space between text and image */
+    gap: 1.5em;           /* space between image and text */
     padding: 1em;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -24,12 +24,20 @@ article {
     transition: transform 0.2s;
 }
 
+/* Image on the left */
+img {
+    width: 100px;
+    height: auto;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
 /* Text section: title above author */
 .text {
     display: flex;
     flex-direction: column;
-    gap: 0.3em;
-    flex: 1;              /* take remaining horizontal space */
+    gap: 0.25em;
+    flex: 1; /* takes remaining space */
 }
 
 /* Title styling */
@@ -45,25 +53,10 @@ h2 {
     color: gray;
 }
 
-/* Image on the right, next to text */
-img {
-    width: 100px;
-    height: auto;
-    border-radius: 4px;
-    flex-shrink: 0;        /* don’t shrink */
-}
-
 /* Hover effect for polish */
 article:hover {
     background-color: #f0f0f0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transform: translateY(-2px);
-}
-
-/* Parent container: horizontal flow with wrapping */
-.readings {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2em;             /* space between cards before wrapping */
 }
 </style>
