@@ -13,7 +13,7 @@
   <title>{projects.length} Projects</title>
 </svelte:head>
 <!-- <pre>{ JSON.stringify(projects, null, "\t") }</pre> -->
-    <h1>My Projects</h1>
+    <h1>{projects.length} Projects</h1>
     <div class="projects">
       {#each projects as p}
         <Project data={p}/>

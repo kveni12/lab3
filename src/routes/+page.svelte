@@ -4,6 +4,9 @@
   import reading from "$lib/reading.json";
   import ReadingItem from "$lib/ReadingItem.svelte";
 </script>
+<svelte:head>
+  <title>Home</title>
+</svelte:head>
 <nav> 
         <a class="current" href=".">Home</a>
         <a href="projects">Projects</a>
