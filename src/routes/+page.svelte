@@ -5,7 +5,7 @@
   import ReadingItem from "$lib/ReadingItem.svelte";
 </script>
 <svelte:head>
-  <title>Home</title>
+  <title>Krishna Parvataneni's Portfolio: Home</title>
 </svelte:head>
 <nav> 
         <a class="current" href=".">Home</a>
