@@ -27,13 +27,17 @@ let pages = [
 </label>
 <nav>   
     {#each pages as p}
-        <a href={base + p.url}
-            class:current={p.url === "/" // is this link the home page?
-            ? $page.url.pathname === (base + "/") // if yes - set current = true if the path name matches. Else, set current = true if the path name starts correctly
-            : $page.url.pathname.startsWith(base + p.url)}
-            target={p.url.startsWith("http") ? "_blank": null}
-            >
-            {p.title}
+        <a 
+        href={p.url.startsWith("http") ? p.url : base + p.url}
+        class:current={
+            p.url === "/"
+            ? $page.url.pathname === (base + "/")
+            : !p.url.startsWith("http") && $page.url.pathname.startsWith(base + p.url)
+        }
+        target={p.url.startsWith("http") ? "_blank" : null}
+        rel={p.url.startsWith("http") ? "noopener noreferrer" : null}
+        >
+        {p.title}
         </a>
     {/each}
 </nav>
