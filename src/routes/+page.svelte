@@ -7,13 +7,6 @@
 <svelte:head>
   <title>Krishna Parvataneni's Portfolio: Home</title>
 </svelte:head>
-<nav> 
-        <a class="current" href=".">Home</a>
-        <a href="projects">Projects</a>
-        <a href="contact">Contact</a>
-        <a href="resume">Resume</a>
-        <li><a href="https://github.com/kveni12" target="_blank">Github</a></li>
-    </nav>
 <div class="main-content">
     <div class="about-me">
         <h1> Krishna Parvataneni</h1>

@@ -1,13 +1,6 @@
 <svelte:head>
   <title>Resume</title>
 </svelte:head>
-<nav> 
-  <a href="../">Home</a>
-  <a href="../projects">Projects</a>
-  <a href="../contact">Contact</a>
-  <a class="current" href="../resume">Resume</a>
-  <a href="https://github.com/kveni12" target="_blank">Github</a>
-</nav>
 <header>
   <h1> Resume (Krishna Parvataneni)</h1>
   <p>Cambridge, MA</p>
