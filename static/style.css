@@ -10,6 +10,9 @@ body {
  margin-inline: auto;
 }
 
+/* :root {
+  color-scheme: color-scheme-switch;
+} */
 
 html {
   accent-color: var(--color-accent);

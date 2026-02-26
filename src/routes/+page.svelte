@@ -16,7 +16,7 @@
     </div>
 
     <div class="reading-section">
-        <h2> What I'm Reading </h2>
+        <h2 class="reading-title"> What I'm Reading </h2>
         <div class="readings">
             {#each reading as r}
                 <ReadingItem data={r} />
@@ -58,5 +58,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em;
+}
+.reading-title {
+    color: black;
 }
 </style>

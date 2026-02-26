@@ -19,7 +19,7 @@ article {
     padding: 1em;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: #fafafa;
+    background-color: rgba(128, 128, 128, 0.1);
     flex: 0 1 320px;      /* min width for wrapping */
     transition: transform 0.2s;
 }
@@ -37,6 +37,7 @@ img {
     display: flex;
     flex-direction: column;
     gap: 0.25em;
+    color: black;
     flex: 1; /* takes remaining space */
 }
 
@@ -55,7 +56,7 @@ h2 {
 
 /* Hover effect for polish */
 article:hover {
-    background-color: #f0f0f0;
+    background-color: rgba(128, 128, 128, 0.2);
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transform: translateY(-2px);
 }
