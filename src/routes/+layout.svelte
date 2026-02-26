@@ -14,7 +14,7 @@ let pages = [
   {url: "/projects", title: "Projects"},
   {url: "/resume", title: "Resume"},
   {url: "/contact", title: "Contact"},
-  {url: "https://github.com/kveni12", title: "Github"},
+  {url: "https://github.com/kveni12", title: "Github"} 
 ];
 </script>
 <label class="color-scheme-switch">
