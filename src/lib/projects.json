@@ -4,62 +4,62 @@
     "image": "images/a1.png",
     "year": 2026,
     "description": "Designed three visualization sketches to examine how the age and sex structure of the U.S. population changed between 1900 and 2000. Explored population pyramids, block diagrams, and line plots to compare demographic composition, growth patterns, and age-specific trends.",
-    "story": "This project started with a simple question: how did the structure of the U.S. population change over a century? By sketching multiple visualization styles, I explored how design choices shape what patterns become visible. The process highlighted how the same dataset can tell very different stories depending on how it is represented."
+    "story": "This project began with a simple question: how did the structure of the U.S. population change over the course of a century? By sketching several visualization styles, I explored how different designs revealed different patterns in the same dataset. Working through population pyramids, block diagrams, and line plots made it clear that visualization is not only about displaying data, but about shaping how a story becomes visible."
   },
   {
     "title": "6.c35 Assignment 2: Exploratory Visual Analysis",
     "image": "images/a2.png",
     "year": 2026,
     "description": "Conducted exploratory analysis of zoning and housing patterns across Metro Boston using maps, histograms, and comparative charts. Investigated how single-family zoning relates to household composition, income distribution, and racial diversity.",
-    "story": "Housing policy often appears abstract, but its effects shape real neighborhoods and communities. Through exploratory analysis of zoning data in Metro Boston, I examined how single-family zoning relates to demographic and economic patterns. The work revealed how uneven and complex these relationships are across municipalities."
+    "story": "Housing policy often appears abstract on paper, but its effects shape real neighborhoods and communities. In this project, I explored zoning data across Metro Boston, looking for patterns in how single-family zoning relates to household composition, income distribution, and racial diversity. As the visualizations developed, the complexity of those relationships began to emerge across different municipalities."
   },
   {
     "title": "6.c35 Assignment 3: Visualization Critique and Redesign",
     "image": "images/a3.png",
     "year": 2026,
     "description": "Critiqued a spiral visualization of COVID-19 case trends and redesigned it to improve interpretability and analytical clarity. Developed alternative designs including time-series, heatmap, and bubble visualizations to better communicate pandemic dynamics.",
-    "story": "A striking spiral chart of COVID-19 cases inspired this redesign exercise. While visually compelling, the original graphic made precise comparisons difficult, prompting a deeper exploration of how form affects interpretation. By iterating through multiple redesigns, I focused on balancing narrative storytelling with analytical clarity."
+    "story": "This project started with a striking spiral chart showing COVID-19 case trends. While visually compelling, the original design made careful comparison difficult, which led me to rethink how the data might be communicated more clearly. Through a series of redesigns, including time-series plots, heatmaps, and bubble charts, I explored how visualization can balance narrative impact with analytical clarity."
   },
   {
     "title": "6.c35 Assignment 4: Persuasive/Deceptive Visualization",
     "image": "images/a4.png",
     "year": 2026,
     "description": "Created paired visualizations arguing for and against a proposition about abortion clinic availability and abortion rates. The project examines how framing, layout, and metric selection influence interpretation and ethical persuasion in data visualization.",
-    "story": "This project explored the ethical boundary between persuasion and deception in data visualization. By constructing two opposing visual arguments from the same dataset, I examined how choices like titles, color, and layout subtly guide interpretation. The exercise reinforced how visualization design carries responsibility for how data is understood."
+    "story": "This project explored the ethical boundary between persuasion and deception in data visualization. Using the same dataset, I constructed two visual arguments that reached opposite conclusions about abortion clinic availability and abortion rates. By adjusting framing, titles, color, and layout, the exercise showed how easily design choices can guide interpretation and why responsible visualization matters."
   },
   {
     "title": "Abscess Drain Tracking Database",
     "image": "images/abscessdrain.png",
     "year": 2024,
     "description": "Developing a clinical database and analysis pipeline to track abscess drain placements, complications, and outcomes in interventional radiology. The system supports longitudinal monitoring and research on drainage effectiveness and patient recovery.",
-    "story": "In clinical practice, abscess drains are placed frequently, yet outcome tracking is often fragmented across systems. This project focuses on building a structured database that captures procedure details, complications, and follow-up outcomes. By organizing this information, the goal is to enable clearer clinical insights and support future research."
+    "story": "In clinical practice, abscess drains are placed frequently, yet information about outcomes is often scattered across systems. This project began with the challenge of organizing that information into a structured database. By tracking procedure details, complications, and follow-up outcomes, the goal is to make patterns in patient recovery easier to understand and study."
   },
   {
     "title": "Deep Vein Thrombosis Management Database",
     "image": "images/dvt.png",
     "year": 2025,
     "description": "Building a structured dataset to study treatment patterns and outcomes for patients with deep vein thrombosis. The project aims to support clinical research and improve decision-making in vascular and interventional care.",
-    "story": "Deep vein thrombosis management involves many clinical decisions, from anticoagulation strategies to procedural interventions. This project organizes patient data to better understand how different treatment approaches relate to outcomes. The goal is to create a foundation for more data-informed care in vascular medicine."
+    "story": "Managing deep vein thrombosis involves a range of clinical decisions, from medication strategies to procedural interventions. In this project, I worked on organizing patient data to better understand how those decisions relate to outcomes. The resulting dataset creates a foundation for studying treatment patterns and improving data-informed care."
   },
   {
     "title": "ToolUniverse",
     "image": "images/tooluniverse.png",
     "year": 2025,
     "description": "Developed a platform for organizing and exploring specialized tools and resources across technical domains. The project focuses on improving discoverability and accessibility for researchers and developers.",
-    "story": "Researchers and developers often rely on a growing ecosystem of specialized tools, but discovering the right one can be surprisingly difficult. ToolUniverse was designed to make that exploration easier by organizing tools into a navigable and searchable system. The project explores how interface design can help people move through complex technical landscapes."
+    "story": "Technical work often relies on a large ecosystem of specialized tools, but discovering the right one can be unexpectedly difficult. ToolUniverse grew out of the idea that exploring these tools should feel more structured and intuitive. By organizing resources into a navigable system, the project explores how interface design can make complex technical landscapes easier to navigate."
   },
   {
     "title": "GAMI - CHW LLM",
     "image": "images/chwllm.png",
     "year": 2025,
     "description": "Designing a large language model assistant to support community health workers in low-resource settings. The system aims to help workers access medical guidance, document cases, and navigate care pathways more efficiently.",
-    "story": "Community health workers often operate with limited clinical resources while serving as the first point of contact for patients. This project explores how language models could support their work by providing guidance, documentation assistance, and decision support. The aim is to build tools that strengthen frontline care rather than replace it."
+    "story": "Community health workers often serve as the first point of contact for patients in low-resource settings. This project explores how a language model could support their work by helping them access medical guidance, document cases, and navigate care pathways. The aim is to design tools that strengthen frontline healthcare rather than replace human judgment."
   },
   {
     "title": "pH-Sensitive Enzyme Delivery Device for Hyperoxaluria",
     "image": "images/gastro.png",
     "year": 2025,
     "description": "Researching a pH-responsive star-shaped gastrointestinal device that delivers enzymes to degrade dietary oxalate before absorption. The project evaluates device performance and enzyme stability through in vivo testing.",
-    "story": "Hyperoxaluria can lead to severe kidney complications when oxalate accumulates in the body. This project investigates a soft robotic device designed to travel through the gastrointestinal tract while protecting and delivering oxalate-degrading enzymes. By combining materials science, bioengineering, and in vivo testing, the work explores new approaches to targeted therapeutic delivery."
+    "story": "Hyperoxaluria is a condition where oxalate accumulates in the body and can lead to kidney complications. This project investigates a pH-responsive device designed to move through the gastrointestinal tract while carrying enzymes that break down dietary oxalate. Through in vivo testing, the work explores how bioengineering and materials design can help deliver targeted therapies in challenging environments."
   }
 ]
