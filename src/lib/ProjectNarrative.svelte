@@ -3,15 +3,18 @@ import Scrolly from "svelte-scrolly";
 
 export let projects = [];
 
-$: sorted_projects = [...projects].sort((a,b)=>a.year-b.year);
-
 let scrollyProgress = 0;
 
-/* determine which project is active */
-$: activeProjectIdx = Math.min(
-  sorted_projects.length - 1,
-  Math.floor((scrollyProgress / 100) * sorted_projects.length)
-);
+$: sorted_projects = [...projects].sort((a,b)=>a.year-b.year);
+
+let activeProjectIdx = 0;
+
+$: if (sorted_projects.length) {
+  activeProjectIdx = Math.min(
+    sorted_projects.length - 1,
+    Math.floor((scrollyProgress / 100) * sorted_projects.length)
+  );
+}
 </script>
 
 <div class="scrolly-wrapper">
@@ -33,6 +36,8 @@ $: activeProjectIdx = Math.min(
 
 <div class="project-detail">
 
+{#if sorted_projects.length}
+
 <h3 class="year">
   {sorted_projects[activeProjectIdx].year}
 </h3>
@@ -40,7 +45,10 @@ $: activeProjectIdx = Math.min(
 <img
   src={sorted_projects[activeProjectIdx].image}
   alt={`Image for ${sorted_projects[activeProjectIdx].title}`}
+  loading="eager"
 />
+
+{/if}
 
 </div>
 
@@ -52,20 +60,17 @@ $: activeProjectIdx = Math.min(
 
 <style>
 
-/* container */
 
 .scrolly-wrapper {
   width: min(1100px, 94vw);
   margin: 0 auto;
 }
 
-/* narrative column */
 
 .story-column {
   padding-bottom: 60vh;
 }
 
-/* project blocks */
 
 .step-content {
   min-height: 48vh;
@@ -76,13 +81,11 @@ $: activeProjectIdx = Math.min(
   transition: border-color 0.2s ease;
 }
 
-/* purple line for active project */
 
 .step-content.active {
-  border-left: 4px solid #8b5cf6;
+  border-left: 4px solid #d8c7ff;
 }
 
-/* text */
 
 .step-content h3 {
   font-size: clamp(1.25rem, 2vw, 1.5rem);
@@ -94,8 +97,6 @@ $: activeProjectIdx = Math.min(
   line-height: 1.6;
   max-width: 55ch;
 }
-
-/* visualization */
 
 .project-detail {
   padding: clamp(1rem, 2vw, 2rem);
@@ -111,7 +112,6 @@ $: activeProjectIdx = Math.min(
   margin-bottom: 0.8rem;
 }
 
-/* image */
 
 .project-detail img {
   width: 100%;
