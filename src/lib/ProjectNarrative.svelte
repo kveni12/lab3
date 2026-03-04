@@ -3,7 +3,7 @@ import Scrolly from "svelte-scrolly";
 
 export let projects = [];
 
-let sorted_projects = [...projects].sort((a,b)=>a.year-b.year);
+$: sorted_projects = [...projects].sort((a,b)=>a.year-b.year);
 
 let scrollyProgress = 0;
 
