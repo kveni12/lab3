@@ -7,6 +7,7 @@ let sorted_projects = [...projects].sort((a,b)=>a.year-b.year);
 
 let scrollyProgress = 0;
 
+/* determine which project is active */
 $: activeProjectIdx = Math.min(
   sorted_projects.length - 1,
   Math.floor((scrollyProgress / 100) * sorted_projects.length)
@@ -19,8 +20,8 @@ $: activeProjectIdx = Math.min(
 
 <section class="story-column">
 
-{#each sorted_projects as project}
-  <div class="step-content">
+{#each sorted_projects as project, i}
+  <div class="step-content {i === activeProjectIdx ? 'active' : ''}">
       <h3>{project.title}</h3>
       <p>{project.story}</p>
   </div>
@@ -58,22 +59,30 @@ $: activeProjectIdx = Math.min(
   margin: 0 auto;
 }
 
-/* story column */
+/* narrative column */
 
 .story-column {
-  padding-bottom: 60vh; /* keeps last image aligned */
+  padding-bottom: 60vh;
 }
 
-/* individual project steps */
+/* project blocks */
 
 .step-content {
   min-height: 48vh;
   padding: clamp(1rem, 2vw, 1.75rem);
-  border-left: 4px solid var(--accent-color);
   margin-bottom: 1rem;
+  border-left: 4px solid transparent;
+  padding-left: 1.5rem;
+  transition: border-color 0.2s ease;
 }
 
-/* typography */
+/* purple line for active project */
+
+.step-content.active {
+  border-left: 4px solid #8b5cf6;
+}
+
+/* text */
 
 .step-content h3 {
   font-size: clamp(1.25rem, 2vw, 1.5rem);
@@ -84,10 +93,9 @@ $: activeProjectIdx = Math.min(
   font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   line-height: 1.6;
   max-width: 55ch;
-  margin: 0.4rem 0;
 }
 
-/* visualization panel */
+/* visualization */
 
 .project-detail {
   padding: clamp(1rem, 2vw, 2rem);
