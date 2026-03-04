@@ -3,6 +3,22 @@
   import Project from "$lib/Project.svelte";
   import reading from "$lib/reading.json";
   import ReadingItem from "$lib/ReadingItem.svelte";
+  import {onMount} from "svelte";
+  let githubData = null;
+  let loading = true;
+  let error = null;
+  onMount(async() => {
+    try{
+        console.log("Page has been mounted!");
+        let response = await fetch("https://api.github.com/users/kveni12");
+        console.log(response);
+        githubData = await response.json();
+        console.log(githubData);
+    } catch (err) { // if the "try" block runs into an error, cancel excecution and run this code instead
+        error = err;
+    }
+    loading = false; // don't forget to add this line!
+    })
 </script>
 <svelte:head>
   <title>Krishna Parvataneni's Portfolio: Home</title>
@@ -24,6 +40,26 @@
         </div>
     </div>
 </div>
+{#if loading}
+  <p>Loading...</p>
+{:else if error}
+  <p>Something went wrong: {error.message}</p>
+{:else}
+<section class="github">
+  <h2>My GitHub Stats</h2>
+
+  <dl class="stats">
+    <dt>Followers</dt>
+    <dd>{githubData.followers}</dd>
+
+    <dt>Following</dt>
+    <dd>{githubData.following}</dd>
+
+    <dt>Public Repositories</dt>
+    <dd>{githubData.public_repos}</dd>
+  </dl>
+</section>
+{/if}
 <h2> Some of my projects:</h2><br>
 <div class="projects highlights">
     {#each projects.slice(0, 3) as p}
@@ -61,5 +97,22 @@
 }
 .reading-title {
     color: black;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+}
+
+.stats dt {
+  grid-row: 1;
+  font-weight: 600;
+}
+
+.stats dd {
+  grid-row: 2;
+  margin: 0;
+  font-size: 1.5rem;
 }
 </style>
