@@ -21,8 +21,19 @@ $: yScale = d3.scaleLinear()
 
 $: colorScale = d3.scaleOrdinal(d3.schemeTableau10)
     .domain(data.map(d => d.label));
+
+let xAxis, yAxis;
+$: if (xAxis && yAxis) {
+    d3.select(xAxis).call(d3.axisBottom(xScale));
+    d3.select(yAxis).call(d3.axisLeft(yScale));
+}
+
 </script>
 <svg viewBox="0 0 {width} {height}">
+    <g transform="translate({margin.left}, {margin.top + innerHeight})"
+       bind:this={xAxis} />
+    <g transform="translate({margin.left}, {margin.top})"
+       bind:this={yAxis} />
     <g transform="translate({margin.left}, {margin.top})">
         {#each data as d}
             <rect
