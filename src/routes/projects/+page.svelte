@@ -10,15 +10,18 @@
   import * as d3 from 'd3';
   let rawData = [];
   let wrangled = [];
+  
 
   onMount(async () => {
-      rawData = await d3.json('/lab6_example.json');
+      rawData = await d3.json('$lib/projects.json');
       wrangled = d3.rollups(
           rawData,
           v => d3.sum(v, d => d.lines),
           d => d.language
       );
   });
+  $: barData = d3.rollups(projects, v => v.length, d => d.year)
+    .map(([year, count]) => ({ label: String(year), value: count }));
 </script>
 
 <svelte:head>
@@ -30,7 +33,7 @@
     <h2>Data wrangling result</h2>
     <pre>{JSON.stringify(wrangled, null, 2)}</pre>
 </section>
-<Bar />
+<Bar data={barData} />
 <p>
 Scroll down to see a timeline of my projects and how they've contributed to my professional and personal life
 </p>
