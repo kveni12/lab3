@@ -26,7 +26,7 @@ $: yScale = d3.scaleBand()
     .padding(0.25);
 
 /* color scale */
-$: colorScale = d3.scaleOrdinal(d3.schemeTableau10)
+$: colorScale = d3.scaleOrdinal(d3.schemePastel1)
     .domain(data.map(d => d.label));
 
 /* find largest bar */
