@@ -2,6 +2,7 @@
   import projects from "$lib/projects.json";
   import Project from "$lib/Project.svelte";
   import ProjectNarrative from "$lib/ProjectNarrative.svelte";
+  import Bar from "$lib/Bar.svelte";
 
   let years = projects.map(proj => proj.year);
   let range = Math.max(...years) - Math.min(...years) + 1;
@@ -29,6 +30,7 @@
     <h2>Data wrangling result</h2>
     <pre>{JSON.stringify(wrangled, null, 2)}</pre>
 </section>
+<Bar />
 <p>
 Scroll down to see a timeline of my projects and how they've contributed to my professional and personal life
 </p>
