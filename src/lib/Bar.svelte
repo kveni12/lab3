@@ -3,13 +3,7 @@ import * as d3 from 'd3';
 
 let width = 400;
 let height = 300;
-let data = [
-    { label: "A", value: 10 },
-    { label: "B", value: 20 },
-    { label: "C", value: 15 },
-    { label: "D", value: 8 },
-    { label: "E", value: 25 }
-];
+let data = [];
 let margin = { top: 20, right: 20, bottom: 30, left: 60 };
 let innerWidth  = width  - margin.left - margin.right;
 let innerHeight = height - margin.top  - margin.bottom;
