@@ -32,28 +32,62 @@ $: if (xAxis && yAxis) {
 }
 
 </script>
-<svg viewBox="0 0 {width} {height}">
-    <g transform="translate({margin.left}, {margin.top + innerHeight})"
-       bind:this={xAxis} />
-    <g transform="translate({margin.left}, {margin.top})"
-       bind:this={yAxis} />
-    <g transform="translate({margin.left}, {margin.top})">
+<div class="container">
+    <svg viewBox="0 0 {width} {height}">
+        <g transform="translate({margin.left}, {margin.top + innerHeight})"
+        bind:this={xAxis} />
+        <g transform="translate({margin.left}, {margin.top})"
+        bind:this={yAxis} />
+        <g transform="translate({margin.left}, {margin.top})">
+            {#each data as d}
+                <rect
+                    x={xScale(d.label)}
+                    y={yScale(d.value)}
+                    width={xScale.bandwidth()}
+                    height={innerHeight - yScale(d.value)}
+                    fill={colorScale(d.label)}
+                />
+            {/each}
+        </g>
+    </svg>
+    <ul class="legend">
         {#each data as d}
-            <rect
-                x={xScale(d.label)}
-                y={yScale(d.value)}
-                width={xScale.bandwidth()}
-                height={innerHeight - yScale(d.value)}
-                fill={colorScale(d.label)}
-            />
+            <li style="--color: {colorScale(d.label)}">
+                <span class="swatch"></span>
+                {d.label} <em>({d.value})</em>
+            </li>
         {/each}
-    </g>
-</svg>
+    </ul>
+</div>
 
 <style>
-    svg {
+svg {
     max-width: 100%;
     height: auto;
     overflow: visible;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.legend {
+    flex: 1;
+    list-style: none;
+    padding: 0;
+    margin: 1em 0 0;
+    display: flex;
+    gap: 1em;
+}
+.swatch {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-color: var(--color);
+    margin-right: 0.5em;
+}
+li {
+    display: flex;
+    align-items: center;
 }
 </style>
