@@ -31,7 +31,9 @@ onMount(async () => {
     .sort((a,b)=>d3.descending(a.value,b.value));
 });
 </script>
-
+<svelte:head>
+  <title>Meta</title>
+</svelte:head>
 <h1>Meta</h1>
 
 {#if languageData.length > 0}
