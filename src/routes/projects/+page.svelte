@@ -13,7 +13,7 @@
   
 
   onMount(async () => {
-      rawData = await d3.json('lab6_example.json');
+      rawData = await d3.json('/lab6_example.json');
       wrangled = d3.rollups(
           rawData,
           v => d3.sum(v, d => d.lines),
