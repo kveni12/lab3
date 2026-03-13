@@ -5,7 +5,7 @@ export let data = [];
 
 let width = 500;
 let height = 350;
-
+ 
 /* extra right margin for annotation */
 let margin = { top: 40, right: 150, bottom: 50, left: 70 };
 
