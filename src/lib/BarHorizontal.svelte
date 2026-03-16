@@ -61,7 +61,14 @@ $: if (xAxis && yAxis) {
 
 <!-- y axis -->
 <g bind:this={yAxis}></g>
-
+<text
+    transform="rotate(-90)"
+    x={-innerHeight/2}
+    y={-90}
+    text-anchor="middle"
+    class="axis-label">
+    Language
+</text>
 <!-- bars -->
 {#each data as d}
     <rect
