@@ -33,14 +33,24 @@ $: xScale = d3.scaleTime()
 $: yScale = d3.scaleLinear()
               .domain([24, 0])
               .range([usableArea.bottom, usableArea.top]);
+              
 let xAxis, yAxis;
+let yAxisGridlines;
 $: {
     d3.select(xAxis).call(d3.axisBottom(xScale));
+
     d3.select(yAxis).call(
         d3.axisLeft(yScale)
           .tickFormat(d => String(d % 24).padStart(2, "0") + ":00")
     );
+
+    d3.select(yAxisGridlines).call(
+        d3.axisLeft(yScale)
+          .tickFormat("")
+          .tickSize(-usableArea.width)
+    );
 }
+
 onMount(async () => {
 
     locData = await d3.csv(`${base}/loc.csv`, row => ({
@@ -91,11 +101,18 @@ onMount(async () => {
 <h3>Commits by time of day</h3>
 
 <svg viewBox="0 0 {width} {height}">
-    <!-- axes FIRST -->
+    <!-- x axis -->
     <g transform="translate(0, {usableArea.bottom})" bind:this={xAxis} />
+
+    <!-- gridlines (BEFORE y-axis) -->
+    <g class="gridlines"
+       transform="translate({usableArea.left}, 0)"
+       bind:this={yAxisGridlines} />
+
+    <!-- y axis -->
     <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />
 
-    <!-- dots AFTER -->
+    <!-- dots -->
     <g class="dots">
     {#each commits as commit, index }
         <circle
@@ -111,5 +128,9 @@ onMount(async () => {
 <style>
     svg {
         overflow: visible;
+    }
+
+    .gridlines {
+        stroke-opacity: .2;
     }
 </style>
