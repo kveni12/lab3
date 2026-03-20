@@ -137,8 +137,6 @@ onMount(async () => {
         date: new Date(row.date + "T00:00" + row.timezone),
         datetime: new Date(row.datetime)
     }));
-    console.log("RAW locData:", locData);
-    console.log("locData length:", locData.length);
 
     commits = d3.groups(locData, d => d.commit).map(([commit, lines]) => {
         let first = lines[0];
