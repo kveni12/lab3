@@ -9,7 +9,8 @@ let locData = [];
 let languageData = [];
 let commits = [];
 let width = 1000, height = 600;
-
+let hoveredIndex = -1;
+$: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
 // scales
 $: [minDate, maxDate] = d3.extent(commits.map(d => d.date));
 $: maxDatePlusOne = new Date(maxDate);
@@ -92,6 +93,7 @@ onMount(async () => {
 
         return ret;
     });
+    commits = d3.sort(commits, d => -d.totalLines);
 });
 </script>
 <svelte:head>
@@ -126,11 +128,37 @@ onMount(async () => {
             r={rScale(commit.totalLines)}
             fill="steelblue"
             fill-opacity="0.6"
+
+            on:mouseenter={evt => hoveredIndex = index}
+            on:mouseleave={evt => hoveredIndex = -1}
         />
     {/each}
     </g>
 </svg>
+<dl class="info tooltip">
+    <dt>Commit</dt>
+    <dd>
+        <a href="{ hoveredCommit.url }" target="_blank">
+            { hoveredCommit.id }
+        </a>
+    </dd>
 
+    <dt>Date</dt>
+    <dd>
+        { hoveredCommit.datetime?.toLocaleString("en", { dateStyle: "full" }) }
+    </dd>
+
+    <dt>Time</dt>
+    <dd>
+        { hoveredCommit.datetime?.toLocaleString("en", { timeStyle: "short" }) }
+    </dd>
+
+    <dt>Author</dt>
+    <dd>{ hoveredCommit.author }</dd>
+
+    <dt>Lines edited</dt>
+    <dd>{ hoveredCommit.totalLines }</dd>
+</dl>
 <style>
     svg {
         overflow: visible;
@@ -138,5 +166,39 @@ onMount(async () => {
 
     .gridlines {
         stroke-opacity: .2;
+    }
+
+    circle {
+        transition: 200ms;
+    }
+
+    circle:hover {
+        fill: darkgreen;
+    }
+    dl.info {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 4px 8px;
+        margin: 0;
+    }
+
+    dl.info dt {
+        font-weight: normal;
+        color: #666;
+    }
+
+    dl.info dd {
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .tooltip {
+        position: fixed;
+        top: 1em;
+        left: 1em;
+        background: white;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
     }
 </style>
