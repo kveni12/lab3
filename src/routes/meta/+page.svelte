@@ -10,6 +10,7 @@ import {
 
 import BarHorizontal from '$lib/BarHorizontal.svelte';
 
+// data
 let locData = [];
 let languageData = [];
 let commits = [];
@@ -28,10 +29,13 @@ let usableArea = {
 usableArea.width = usableArea.right - usableArea.left;
 usableArea.height = usableArea.bottom - usableArea.top;
 
-// tooltip state
+// interaction state
 let hoveredIndex = -1;
+let clickedCommits = [];
+
 $: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
 
+// tooltip
 let commitTooltip;
 let tooltipPosition = { x: 0, y: 0 };
 
@@ -74,7 +78,7 @@ $: if (xAxis && yAxis && yAxisGridlines) {
     );
 }
 
-// interaction
+// interaction handler
 async function dotInteraction(index, evt) {
     let hoveredDot = evt.target;
 
@@ -90,14 +94,23 @@ async function dotInteraction(index, evt) {
                 autoPlacement()
             ],
         });
-    } else if (evt.type === "mouseleave") {
+    }
+    else if (evt.type === "mouseleave") {
         hoveredIndex = -1;
+    }
+    else if (evt.type === "click") {
+        let commit = commits[index];
+
+        if (!clickedCommits.includes(commit)) {
+            clickedCommits = [...clickedCommits, commit];
+        } else {
+            clickedCommits = clickedCommits.filter(c => c !== commit);
+        }
     }
 }
 
-// data loading
+// load data
 onMount(async () => {
-
     locData = await d3.csv(`${base}/loc.csv`, row => ({
         ...row,
         line: Number(row.line),
@@ -132,7 +145,7 @@ onMount(async () => {
         };
     });
 
-    // sort so small dots render on top
+    // ensure smaller dots render on top
     commits = d3.sort(commits, d => -d.totalLines);
 });
 </script>
@@ -172,8 +185,11 @@ onMount(async () => {
             fill-opacity="0.6"
             style="cursor: pointer"
 
+            class:selected={clickedCommits.includes(commit)}
+
             on:mouseenter={evt => dotInteraction(index, evt)}
             on:mouseleave={evt => dotInteraction(index, evt)}
+            on:click={evt => dotInteraction(index, evt)}
         />
     {/each}
     </g>
@@ -226,13 +242,19 @@ circle:hover {
     fill: darkgreen;
 }
 
-/* optional focus effect */
+/* hover fade effect */
 .dots:hover circle {
     opacity: 0.2;
 }
 
-.dots circle:hover {
+.dots circle:hover,
+.dots circle.selected {
     opacity: 1;
+}
+
+/* selected state */
+.selected {
+    fill: var(--color-accent);
 }
 
 dl.info {
