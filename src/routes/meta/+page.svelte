@@ -56,7 +56,15 @@ $: [minLines, maxLines] = d3.extent(commits.map(d => d.totalLines));
 $: rScale = d3.scaleSqrt()
     .domain([minLines, maxLines])
     .range([5, 30]);
-
+$: languageOrder = Array.from(
+    d3.rollup(
+        locData,
+        v => v.length,
+        d => d.type
+    )
+)
+.sort((a, b) => d3.descending(a[1], b[1]))
+.map(d => d[0]);
 // axes
 let xAxis, yAxis, yAxisGridlines;
 
@@ -87,13 +95,10 @@ $: barData = (() => {
         d => d.type
     );
 
-    let allLanguages = Array.from(new Set(locData.map(d => d.type)));
-
-    return allLanguages.map(lang => ({
+    return languageOrder.map(lang => ({
         label: lang,
         value: counts.get(lang) ?? 0
-    }))
-    .sort((a, b) => d3.descending(a.value, b.value));
+    }));
 })();
 
 // interaction
