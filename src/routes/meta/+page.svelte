@@ -36,7 +36,7 @@ $: yScale = d3.scaleLinear()
 
 $: [minLines, maxLines] = d3.extent(commits.map(d => d.totalLines));
 
-$: rScale = d3.scaleLinear()
+$: rScale = d3.scaleSqrt()
     .domain([minLines, maxLines])
     .range([5, 30]);
 let xAxis, yAxis;
