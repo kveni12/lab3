@@ -33,7 +33,12 @@ $: xScale = d3.scaleTime()
 $: yScale = d3.scaleLinear()
               .domain([24, 0])
               .range([usableArea.bottom, usableArea.top]);
-              
+
+$: [minLines, maxLines] = d3.extent(commits.map(d => d.totalLines));
+
+$: rScale = d3.scaleLinear()
+    .domain([minLines, maxLines])
+    .range([5, 30]);
 let xAxis, yAxis;
 let yAxisGridlines;
 $: {
@@ -118,8 +123,9 @@ onMount(async () => {
         <circle
             cx={ xScale(commit.datetime) }
             cy={ yScale(commit.hourFrac) }
-            r="5"
+            r={rScale(commit.totalLines)}
             fill="steelblue"
+            fill-opacity="0.6"
         />
     {/each}
     </g>
