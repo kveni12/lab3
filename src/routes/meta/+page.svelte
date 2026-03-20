@@ -135,7 +135,7 @@ onMount(async () => {
     {/each}
     </g>
 </svg>
-<dl class="info tooltip">
+<dl class="info tooltip" hidden={hoveredIndex === -1}>
     <dt>Commit</dt>
     <dd>
         <a href="{ hoveredCommit.url }" target="_blank">
@@ -180,6 +180,9 @@ onMount(async () => {
         grid-template-columns: auto 1fr;
         gap: 4px 8px;
         margin: 0;
+
+        transition-duration: 500ms;
+        transition-property: opacity, visibility;
     }
 
     dl.info dt {
@@ -192,13 +195,22 @@ onMount(async () => {
         font-weight: bold;
     }
 
+    dl.info[hidden]:not(:hover, :focus-within) {
+        opacity: 0;
+        visibility: hidden;
+    }
+
     .tooltip {
         position: fixed;
         top: 1em;
         left: 1em;
-        background: white;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
+
+        background-color: oklch(100% 0% 0 / 80%);
+        backdrop-filter: blur(6px);
+
+        padding: 10px 12px;
+        border-radius: 8px;
+
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
 </style>
