@@ -129,7 +129,7 @@ async function dotInteraction(index, evt) {
 
 // load data
 onMount(async () => {
-    locData = await d3.csv(`/loc.csv`, row => ({
+    locData = await d3.csv(`loc.csv`, row => ({
         ...row,
         line: Number(row.line),
         depth: Number(row.depth),
