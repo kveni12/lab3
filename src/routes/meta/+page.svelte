@@ -12,14 +12,12 @@ import BarHorizontal from '$lib/BarHorizontal.svelte';
 
 // data
 let locData = [];
-let languageData = [];
 let commits = [];
 
 // dimensions
 let width = 1000, height = 600;
 let margin = { top: 20, right: 30, bottom: 40, left: 50 };
 
-// usable area
 let usableArea = {
     top: margin.top,
     right: width - margin.right,
@@ -32,7 +30,6 @@ usableArea.height = usableArea.bottom - usableArea.top;
 // interaction state
 let hoveredIndex = -1;
 let clickedCommits = [];
-
 $: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
 
 // tooltip
@@ -78,7 +75,28 @@ $: if (xAxis && yAxis && yAxisGridlines) {
     );
 }
 
-// interaction handler
+// filtered bar data (STEP 5)
+$: barData = (() => {
+    let selectedLines = clickedCommits.length > 0
+        ? clickedCommits.flatMap(d => d.lines)
+        : locData;
+
+    let counts = d3.rollup(
+        selectedLines,
+        v => v.length,
+        d => d.type
+    );
+
+    let allLanguages = Array.from(new Set(locData.map(d => d.type)));
+
+    return allLanguages.map(lang => ({
+        label: lang,
+        value: counts.get(lang) ?? 0
+    }))
+    .sort((a, b) => d3.descending(a.value, b.value));
+})();
+
+// interaction
 async function dotInteraction(index, evt) {
     let hoveredDot = evt.target;
 
@@ -120,17 +138,6 @@ onMount(async () => {
         datetime: new Date(row.datetime)
     }));
 
-    const grouped = d3.rollups(
-        locData,
-        v => v.length,
-        d => d.type
-    );
-
-    languageData = grouped.map(([label, value]) => ({
-        label,
-        value
-    })).sort((a,b)=>d3.descending(a.value,b.value));
-
     commits = d3.groups(locData, d => d.commit).map(([commit, lines]) => {
         let first = lines[0];
         let {author, date, time, timezone, datetime} = first;
@@ -145,36 +152,26 @@ onMount(async () => {
         };
     });
 
-    // ensure smaller dots render on top
     commits = d3.sort(commits, d => -d.totalLines);
 });
 </script>
 
-<svelte:head>
-  <title>Meta</title>
-</svelte:head>
-
 <h1>Meta</h1>
 
-{#if languageData.length > 0}
-<BarHorizontal data={languageData} />
-{/if}
+<BarHorizontal
+    data={barData}
+    title={clickedCommits.length > 0
+        ? "Selected Commits Breakdown"
+        : "Website Code Breakdown"}
+/>
 
 <h3>Commits by time of day</h3>
 
 <svg viewBox="0 0 {width} {height}">
-    <!-- x axis -->
     <g transform="translate(0, {usableArea.bottom})" bind:this={xAxis} />
-
-    <!-- gridlines -->
-    <g class="gridlines"
-       transform="translate({usableArea.left}, 0)"
-       bind:this={yAxisGridlines} />
-
-    <!-- y axis -->
+    <g class="gridlines" transform="translate({usableArea.left}, 0)" bind:this={yAxisGridlines} />
     <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />
 
-    <!-- dots -->
     <g class="dots">
     {#each commits as commit, index}
         <circle
@@ -183,8 +180,6 @@ onMount(async () => {
             r={rScale(commit.totalLines)}
             fill="steelblue"
             fill-opacity="0.6"
-            style="cursor: pointer"
-
             class:selected={clickedCommits.includes(commit)}
 
             on:mouseenter={evt => dotInteraction(index, evt)}
@@ -202,21 +197,13 @@ onMount(async () => {
     style="top: {tooltipPosition.y}px; left: {tooltipPosition.x}px"
 >
     <dt>Commit</dt>
-    <dd>
-        <a href={hoveredCommit.url} target="_blank">
-            {hoveredCommit.id}
-        </a>
-    </dd>
+    <dd><a href={hoveredCommit.url} target="_blank">{hoveredCommit.id}</a></dd>
 
     <dt>Date</dt>
-    <dd>
-        {hoveredCommit.datetime?.toLocaleString("en", { dateStyle: "full" })}
-    </dd>
+    <dd>{hoveredCommit.datetime?.toLocaleString("en", { dateStyle: "full" })}</dd>
 
     <dt>Time</dt>
-    <dd>
-        {hoveredCommit.datetime?.toLocaleString("en", { timeStyle: "short" })}
-    </dd>
+    <dd>{hoveredCommit.datetime?.toLocaleString("en", { timeStyle: "short" })}</dd>
 
     <dt>Author</dt>
     <dd>{hoveredCommit.author}</dd>
@@ -226,71 +213,24 @@ onMount(async () => {
 </dl>
 
 <style>
-svg {
-    overflow: visible;
-}
+svg { overflow: visible; }
+.gridlines { stroke-opacity: .2; }
 
-.gridlines {
-    stroke-opacity: .2;
-}
+circle { transition: 200ms; }
+circle:hover { fill: darkgreen; }
 
-circle {
-    transition: 200ms;
-}
-
-circle:hover {
-    fill: darkgreen;
-}
-
-/* hover fade effect */
-.dots:hover circle {
-    opacity: 0.2;
-}
-
+.dots:hover circle { opacity: 0.2; }
 .dots circle:hover,
-.dots circle.selected {
-    opacity: 1;
-}
+.dots circle.selected { opacity: 1; }
 
-/* selected state */
-.selected {
-    fill: var(--color-accent);
-}
-
-dl.info {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 4px 8px;
-    margin: 0;
-
-    transition-duration: 500ms;
-    transition-property: opacity, visibility;
-}
-
-dl.info dt {
-    font-weight: normal;
-    color: #666;
-}
-
-dl.info dd {
-    margin: 0;
-    font-weight: bold;
-}
-
-dl.info[hidden]:not(:hover, :focus-within) {
-    opacity: 0;
-    visibility: hidden;
-}
+.selected { fill: var(--color-accent); }
 
 .tooltip {
     position: fixed;
-
     background-color: oklch(100% 0% 0 / 80%);
     backdrop-filter: blur(6px);
-
-    padding: 10px 12px;
+    padding: 10px;
     border-radius: 8px;
-
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 </style>

@@ -2,16 +2,16 @@
 import * as d3 from "d3";
 
 export let data = [];
+export let title = "";
 
-let width = 600;
-let height = 350;
+let width = 500;
+let height = 250;
 
-let margin = { top: 40, right: 150, bottom: 50, left: 120 };
+let margin = { top: 30, right: 80, bottom: 40, left: 100 };
 
 let innerWidth = width - margin.left - margin.right;
 let innerHeight = height - margin.top - margin.bottom;
 
-/* x scale (values) */
 $: maxVal = d3.max(data, d => d.value) || 1;
 
 $: xScale = d3.scaleLinear()
@@ -19,26 +19,23 @@ $: xScale = d3.scaleLinear()
     .range([0, innerWidth])
     .nice();
 
-/* y scale (categories) */
 $: yScale = d3.scaleBand()
     .domain(data.map(d => d.label))
     .range([0, innerHeight])
     .padding(0.25);
 
-/* color scale */
 $: colorScale = d3.scaleOrdinal(d3.schemePastel1)
     .domain(data.map(d => d.label));
 
-/* find largest bar */
 $: maxBar = d3.greatest(data, d => d.value);
 
-let xAxis;
-let yAxis;
+let xAxis, yAxis;
 
-/* draw axes */
 $: if (xAxis && yAxis) {
-
-    d3.select(xAxis).call(d3.axisBottom(xScale));
+    d3.select(xAxis).call(
+        d3.axisBottom(xScale)
+            .ticks(Math.min(maxVal, 10))
+    );
 
     d3.select(yAxis).call(d3.axisLeft(yScale));
 }
@@ -48,89 +45,41 @@ $: if (xAxis && yAxis) {
 
 <svg viewBox={`0 0 ${width} ${height}`}>
 
-<!-- title -->
-<text
-    x={width/2}
-    y="25"
-    text-anchor="middle"
-    class="chart-title">
-    Lines of Code by Language
+<text x={width/2} y="20" text-anchor="middle" class="chart-title">
+    {title}
 </text>
 
 <g transform={`translate(${margin.left},${margin.top})`}>
 
-<!-- y axis -->
 <g bind:this={yAxis}></g>
-<text
-    transform="rotate(-90)"
-    x={-innerHeight/2}
-    y={-90}
-    text-anchor="middle"
-    class="axis-label">
-    Language
-</text>
-<!-- bars -->
+
 {#each data as d}
-    <rect
-        x="0"
-        y={yScale(d.label)}
-        width={xScale(d.value)}
-        height={yScale.bandwidth()}
-        fill={colorScale(d.label)}
-    />
-{/each}
-
-<!-- annotation -->
-{#if maxBar}
-
 <rect
     x="0"
-    y={yScale(maxBar.label)}
-    width={xScale(maxBar.value)}
+    y={yScale(d.label)}
+    width={xScale(d.value)}
     height={yScale.bandwidth()}
-    fill="none"
-    stroke="black"
-    stroke-width="2"
+    fill={colorScale(d.label)}
 />
+{/each}
 
-<line
-    x1={xScale(maxBar.value)}
-    y1={yScale(maxBar.label) + yScale.bandwidth()/2}
-    x2={xScale(maxBar.value) + 30}
-    y2={yScale(maxBar.label) + yScale.bandwidth()/2}
-    stroke="black"
-/>
-
+{#if maxBar}
 <text
-    x={xScale(maxBar.value) + 35}
+    x={xScale(maxBar.value) + 10}
     y={yScale(maxBar.label) + yScale.bandwidth()/2}
     dominant-baseline="middle"
+    text-anchor="start"
     class="annotation">
     Most lines of code
 </text>
-
 {/if}
 
-<!-- x axis -->
-<g
-    transform={`translate(0,${innerHeight})`}
-    bind:this={xAxis}
-/>
-
-<!-- x label -->
-<text
-    x={innerWidth/2}
-    y={innerHeight + 40}
-    text-anchor="middle"
-    class="axis-label">
-    Lines of Code
-</text>
+<g transform={`translate(0,${innerHeight})`} bind:this={xAxis} />
 
 </g>
 
 </svg>
 
-<!-- legend -->
 <ul class="legend">
 {#each data as d}
 <li style="--color:{colorScale(d.label)}">
@@ -143,55 +92,26 @@ $: if (xAxis && yAxis) {
 </div>
 
 <style>
-
-.container{
-display:flex;
-flex-direction:row;
-align-items:center;
-gap:2rem;
+.container {
+    display:flex;
+    gap:1.5rem;
+    align-items:center;
 }
 
-svg{
-max-width:100%;
-height:auto;
+.chart-title { font-size:14px; }
+.annotation { font-size:10px; }
+
+.legend {
+    list-style:none;
+    padding:0;
+    font-size:11px;
 }
 
-.chart-title{
-font-size:18px;
-font-weight:600;
+.swatch {
+    width:10px;
+    height:10px;
+    background:var(--color);
+    display:inline-block;
+    margin-right:5px;
 }
-
-.axis-label{
-font-size:13px;
-fill:#444;
-}
-
-.legend{
-list-style:none;
-padding:0;
-margin:0;
-display:flex;
-flex-direction:column;
-gap:0.5rem;
-}
-
-.swatch{
-width:12px;
-height:12px;
-background:var(--color);
-display:inline-block;
-margin-right:6px;
-}
-
-li{
-display:flex;
-align-items:center;
-font-size:13px;
-}
-
-.annotation{
-font-size:11px;
-font-style:italic;
-}
-
 </style>
