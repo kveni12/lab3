@@ -51,10 +51,7 @@ $: selectedCommits = Array.from(new Set([...clickedCommits, ...brushedCommits]))
 // =========================
 // STEP 2.1 DATA WRANGLING
 // =========================
-$: {
-    if (!locData.length) return;
-
-    // group by day
+$: if (locData.length) {
     const rolled = d3.rollups(
         locData,
         v => v.length,
