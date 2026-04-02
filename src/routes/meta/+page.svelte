@@ -9,10 +9,14 @@ import {
 } from '@floating-ui/dom';
 
 import BarHorizontal from '$lib/BarHorizontal.svelte';
+import LineChart from '$lib/LineChart.svelte'; // NEW
 
 // data
 let locData = [];
 let commits = [];
+
+// NEW Step 2.1
+let linesByDate = [];
 
 // dimensions
 let width = 1000, height = 600;
@@ -36,15 +40,43 @@ $: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
 let commitTooltip;
 let tooltipPosition = { x: 0, y: 0 };
 
-// STEP 1.1
+// svg
 let svg;
 
-// STEP 1.4 brush state
+// brush state
 $: brushSelection = null;
 $: brushedCommits = brushSelection ? commits.filter(isCommitBrushed) : [];
 $: selectedCommits = Array.from(new Set([...clickedCommits, ...brushedCommits]));
 
-// scales
+// =========================
+// STEP 2.1 DATA WRANGLING
+// =========================
+$: {
+    if (!locData.length) return;
+
+    // group by day
+    const rolled = d3.rollups(
+        locData,
+        v => v.length,
+        d => d3.timeDay.floor(d.datetime)
+    ).map(([date, count]) => ({ date, count }));
+
+    const [minDate, maxDate] = d3.extent(rolled, d => d.date);
+
+    const allDays = d3.timeDays(
+        minDate,
+        d3.timeDay.offset(maxDate, 1)
+    );
+
+    linesByDate = allDays.map(date => ({
+        date,
+        count: rolled.find(d => +d.date === +date)?.count ?? 0
+    }));
+}
+
+// =========================
+// SCALES (scatter)
+// =========================
 $: [minDate, maxDate] = d3.extent(commits.map(d => d.datetime));
 
 $: maxDatePlusOne = maxDate ? new Date(maxDate) : new Date();
@@ -89,7 +121,7 @@ $: if (xAxis && yAxis && yAxisGridlines) {
     );
 }
 
-// updated bar data (uses selectedCommits)
+// bar chart data
 $: barData = (() => {
     let selectedLines = selectedCommits.length > 0
         ? selectedCommits.flatMap(d => d.lines)
@@ -103,7 +135,9 @@ $: barData = (() => {
     }));
 })();
 
-// brush logic
+// =========================
+// BRUSH
+// =========================
 function brushed(evt) {
     brushSelection = evt.selection;
 }
@@ -119,7 +153,6 @@ function isCommitBrushed(commit) {
     return x0 <= x && x <= x1 && y0 <= y && y <= y1;
 }
 
-// STEP 1.2 + 1.4 brush setup
 $: if (svg) {
     const brush = d3.brush()
         .extent([
@@ -130,11 +163,12 @@ $: if (svg) {
 
     d3.select(svg).call(brush);
 
-    // fix overlay issue
     d3.select(svg).selectAll(".dots, .overlay ~ *").raise();
 }
 
-// interaction
+// =========================
+// INTERACTION
+// =========================
 async function dotInteraction(index, evt) {
     let hoveredDot = evt.target;
 
@@ -223,6 +257,12 @@ onMount(async () => {
     </g>
 </svg>
 
+<!-- ========================= -->
+<!-- STEP 2 LINE CHART -->
+<!-- ========================= -->
+<h3 style="text-align:center;">Lines Edited by Day</h3>
+<LineChart data={linesByDate} />
+
 <dl
     class="info tooltip"
     bind:this={commitTooltip}
@@ -247,18 +287,7 @@ onMount(async () => {
 
 <style>
 svg { overflow: visible; }
-.gridlines { stroke-opacity: .2; }
 
-circle { transition: 200ms; }
-circle:hover { fill: darkgreen; }
-
-.dots:hover circle { opacity: 0.2; }
-.dots circle:hover,
-.dots circle.selected { opacity: 1; }
-
-.selected { fill: var(--color-accent); }
-
-/* STEP 1.3 styling */
 @keyframes marching-ants {
     to { stroke-dashoffset: -8; }
 }
@@ -274,7 +303,6 @@ svg :global(.selection) {
 .tooltip {
     position: fixed;
     background-color: oklch(100% 0% 0 / 80%);
-    backdrop-filter: blur(6px);
     padding: 10px;
     border-radius: 8px;
 }
