@@ -65,6 +65,7 @@ $: languageOrder = Array.from(
 )
 .sort((a, b) => d3.descending(a[1], b[1]))
 .map(d => d[0]);
+$: d3.select(svg).call(d3.brush());
 // axes
 let xAxis, yAxis, yAxisGridlines;
 
