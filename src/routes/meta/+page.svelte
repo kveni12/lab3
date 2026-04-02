@@ -24,7 +24,7 @@ let usableArea = {
 usableArea.width = usableArea.right - usableArea.left;
 usableArea.height = usableArea.bottom - usableArea.top;
 
-// interaction
+// interaction state
 let hoveredIndex = -1;
 let clickedCommits = [];
 let svg;
@@ -41,7 +41,7 @@ let tooltipPosition = { x: 0, y: 0 };
 let brushSelection = null;
 
 function brushed(evt) {
-    brushSelection = evt.selection;
+    brushSelection = evt.selection ?? null;
 }
 
 // =========================
@@ -68,6 +68,26 @@ $: rScale = d3.scaleSqrt()
     .range([5, 30]);
 
 // =========================
+// AXES
+// =========================
+let xAxis, yAxis, yAxisGridlines;
+
+$: if (xAxis && yAxis && yAxisGridlines) {
+    d3.select(xAxis).call(d3.axisBottom(xScale));
+
+    d3.select(yAxis).call(
+        d3.axisLeft(yScale)
+          .tickFormat(d => String(d % 24).padStart(2, "0") + ":00")
+    );
+
+    d3.select(yAxisGridlines).call(
+        d3.axisLeft(yScale)
+          .tickFormat("")
+          .tickSize(-usableArea.width)
+    );
+}
+
+// =========================
 // SELECTION LOGIC (FIXED)
 // =========================
 function isCommitBrushed(commit) {
@@ -85,22 +105,20 @@ $: brushedCommits = brushSelection
     ? commits.filter(isCommitBrushed)
     : [];
 
-// ✅ KEY FIX: only treat as selection if non-empty
 $: selectedCommits =
     (clickedCommits.length || brushedCommits.length)
         ? Array.from(new Set([...clickedCommits, ...brushedCommits]))
         : [];
 
 // =========================
-// BAR DATA (FIXED)
+// BAR DATA
 // =========================
 $: barData = (() => {
-    const source =
-        selectedCommits.length > 0
-            ? selectedCommits.flatMap(d => d.lines)
-            : locData;
+    let selectedLines = selectedCommits.length > 0
+        ? selectedCommits.flatMap(d => d.lines)
+        : locData;
 
-    const counts = d3.rollup(source, v => v.length, d => d.type);
+    let counts = d3.rollup(selectedLines, v => v.length, d => d.type);
 
     return Array.from(counts, ([label, value]) => ({ label, value }));
 })();
@@ -152,6 +170,8 @@ async function dotInteraction(index, evt) {
     if (evt.type === "mouseenter") {
         hoveredIndex = index;
 
+        if (!commitTooltip) return;
+
         tooltipPosition = await computePosition(evt.target, commitTooltip, {
             strategy: "fixed",
             middleware: [offset(5), autoPlacement()],
@@ -202,14 +222,18 @@ onMount(async () => {
     data={barData}
     title={
         selectedCommits.length > 0
-            ? `${selectedCommits.length} Selected Commits`
-            : "All Commits Breakdown"
+            ? `Lines of Code: ${selectedCommits.length} Selected Commits`
+            : "Website Code Breakdown"
     }
 />
 
 <h3>Commits by time of day</h3>
 
 <svg bind:this={svg} viewBox="0 0 {width} {height}">
+    <g transform="translate(0, {usableArea.bottom})" bind:this={xAxis} />
+    <g class="gridlines" transform="translate({usableArea.left}, 0)" bind:this={yAxisGridlines} />
+    <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />
+
     <g class="dots">
     {#each commits as commit, index}
         <circle
@@ -229,16 +253,48 @@ onMount(async () => {
     </g>
 </svg>
 
-<h3 style="text-align:center;">Lines Edited by Day</h3>
 <LineChart data={linesByDate} />
 
-<dl bind:this={commitTooltip} hidden={hoveredIndex === -1}
-    style="top:{tooltipPosition.y}px; left:{tooltipPosition.x}px">
-    <dd>{hoveredCommit.id}</dd>
+<dl
+    class="info tooltip"
+    bind:this={commitTooltip}
+    hidden={hoveredIndex === -1}
+    style="top: {tooltipPosition.y}px; left: {tooltipPosition.x}px"
+>
+    <dt>Commit</dt>
+    <dd><a href={hoveredCommit.url} target="_blank">{hoveredCommit.id}</a></dd>
+
+    <dt>Date</dt>
+    <dd>{hoveredCommit.datetime?.toLocaleString("en", { dateStyle: "full" })}</dd>
+
+    <dt>Time</dt>
+    <dd>{hoveredCommit.datetime?.toLocaleString("en", { timeStyle: "short" })}</dd>
+
+    <dt>Author</dt>
+    <dd>{hoveredCommit.author}</dd>
+
+    <dt>Lines edited</dt>
+    <dd>{hoveredCommit.totalLines}</dd>
 </dl>
 
 <style>
 svg { overflow: visible; }
+.gridlines { stroke-opacity: .2; }
+
+circle { transition: 200ms; }
+circle:hover { fill: darkgreen; }
+
+.dots:hover circle { opacity: 0.2; }
+.dots circle:hover,
+.dots circle.selected { opacity: 1; }
+
+.tooltip {
+    position: fixed;
+    background-color: oklch(100% 0% 0 / 80%);
+    backdrop-filter: blur(6px);
+    padding: 10px;
+    border-radius: 8px;
+}
 
 svg :global(.selection) {
     fill-opacity: 0.1;
