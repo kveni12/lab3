@@ -36,8 +36,13 @@ $: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
 let commitTooltip;
 let tooltipPosition = { x: 0, y: 0 };
 
-// 👉 STEP 1.1: bind svg
+// STEP 1.1
 let svg;
+
+// STEP 1.4 brush state
+$: brushSelection = null;
+$: brushedCommits = brushSelection ? commits.filter(isCommitBrushed) : [];
+$: selectedCommits = Array.from(new Set([...clickedCommits, ...brushedCommits]));
 
 // scales
 $: [minDate, maxDate] = d3.extent(commits.map(d => d.datetime));
@@ -61,11 +66,7 @@ $: rScale = d3.scaleSqrt()
     .range([5, 30]);
 
 $: languageOrder = Array.from(
-    d3.rollup(
-        locData,
-        v => v.length,
-        d => d.type
-    )
+    d3.rollup(locData, v => v.length, d => d.type)
 )
 .sort((a, b) => d3.descending(a[1], b[1]))
 .map(d => d[0]);
@@ -88,23 +89,50 @@ $: if (xAxis && yAxis && yAxisGridlines) {
     );
 }
 
-// filtered bar data (STEP 5)
+// updated bar data (uses selectedCommits)
 $: barData = (() => {
-    let selectedLines = clickedCommits.length > 0
-        ? clickedCommits.flatMap(d => d.lines)
+    let selectedLines = selectedCommits.length > 0
+        ? selectedCommits.flatMap(d => d.lines)
         : locData;
 
-    let counts = d3.rollup(
-        selectedLines,
-        v => v.length,
-        d => d.type
-    );
+    let counts = d3.rollup(selectedLines, v => v.length, d => d.type);
 
     return languageOrder.map(lang => ({
         label: lang,
         value: counts.get(lang) ?? 0
     }));
 })();
+
+// brush logic
+function brushed(evt) {
+    brushSelection = evt.selection;
+}
+
+function isCommitBrushed(commit) {
+    if (!brushSelection) return false;
+
+    const [[x0, y0], [x1, y1]] = brushSelection;
+
+    const x = xScale(commit.datetime);
+    const y = yScale(commit.hourFrac);
+
+    return x0 <= x && x <= x1 && y0 <= y && y <= y1;
+}
+
+// STEP 1.2 + 1.4 brush setup
+$: if (svg) {
+    const brush = d3.brush()
+        .extent([
+            [usableArea.left, usableArea.top],
+            [usableArea.right, usableArea.bottom]
+        ])
+        .on("start brush end", brushed);
+
+    d3.select(svg).call(brush);
+
+    // fix overlay issue
+    d3.select(svg).selectAll(".dots, .overlay ~ *").raise();
+}
 
 // interaction
 async function dotInteraction(index, evt) {
@@ -117,10 +145,7 @@ async function dotInteraction(index, evt) {
 
         tooltipPosition = await computePosition(hoveredDot, commitTooltip, {
             strategy: "fixed",
-            middleware: [
-                offset(5),
-                autoPlacement()
-            ],
+            middleware: [offset(5), autoPlacement()],
         });
     }
     else if (evt.type === "mouseleave") {
@@ -170,9 +195,7 @@ onMount(async () => {
 
 <BarHorizontal
     data={barData}
-    title={clickedCommits.length > 0
-        ? "Selected Commits Breakdown"
-        : "Website Code Breakdown"}
+    title={`Lines of Code: ${selectedCommits.length} Selected Commits`}
 />
 
 <h3>Commits by time of day</h3>
@@ -190,7 +213,7 @@ onMount(async () => {
             r={rScale(commit.totalLines)}
             fill="steelblue"
             fill-opacity="0.6"
-            class:selected={clickedCommits.includes(commit)}
+            class:selected={selectedCommits.includes(commit)}
 
             on:mouseenter={evt => dotInteraction(index, evt)}
             on:mouseleave={evt => dotInteraction(index, evt)}
@@ -235,12 +258,24 @@ circle:hover { fill: darkgreen; }
 
 .selected { fill: var(--color-accent); }
 
+/* STEP 1.3 styling */
+@keyframes marching-ants {
+    to { stroke-dashoffset: -8; }
+}
+
+svg :global(.selection) {
+    fill-opacity: 0.1;
+    stroke: black;
+    stroke-opacity: 0.7;
+    stroke-dasharray: 5 3;
+    animation: marching-ants 2s linear infinite;
+}
+
 .tooltip {
     position: fixed;
     background-color: oklch(100% 0% 0 / 80%);
     backdrop-filter: blur(6px);
     padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 </style>
