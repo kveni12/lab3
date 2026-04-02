@@ -36,6 +36,9 @@ $: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
 let commitTooltip;
 let tooltipPosition = { x: 0, y: 0 };
 
+// 👉 STEP 1.1: bind svg
+let svg;
+
 // scales
 $: [minDate, maxDate] = d3.extent(commits.map(d => d.datetime));
 
@@ -56,6 +59,7 @@ $: [minLines, maxLines] = d3.extent(commits.map(d => d.totalLines));
 $: rScale = d3.scaleSqrt()
     .domain([minLines, maxLines])
     .range([5, 30]);
+
 $: languageOrder = Array.from(
     d3.rollup(
         locData,
@@ -65,7 +69,7 @@ $: languageOrder = Array.from(
 )
 .sort((a, b) => d3.descending(a[1], b[1]))
 .map(d => d[0]);
-$: d3.select(svg).call(d3.brush());
+
 // axes
 let xAxis, yAxis, yAxisGridlines;
 
@@ -173,7 +177,7 @@ onMount(async () => {
 
 <h3>Commits by time of day</h3>
 
-<svg viewBox="0 0 {width} {height}">
+<svg bind:this={svg} viewBox="0 0 {width} {height}">
     <g transform="translate(0, {usableArea.bottom})" bind:this={xAxis} />
     <g class="gridlines" transform="translate({usableArea.left}, 0)" bind:this={yAxisGridlines} />
     <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />
