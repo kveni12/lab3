@@ -64,9 +64,10 @@
   },
   {
     "title": "6.c35 Lab 9: Cycle-ytics: Watching the Wheels Turn 🚴🏼‍♀️",
+    "link": "https://kveni12.github.io/lab_9/",
     "image": "images/bluebike.png",
     "year": 2026,
-    "description": "link: link: <a href=\"https://kveni12.github.io/lab_9/\" target=\"_blank\">https://kveni12.github.io/lab_9/</a>, Cycle-ytics is an interactive map that visualizes Bluebikes traffic, bike lane networks, and cycling accessibility across Boston and Cambridge.",
-    "story": "link: link: <a href=\"https://kveni12.github.io/lab_9/\" target=\"_blank\">https://kveni12.github.io/lab_9/</a>, Inspired by the vibrant cycling culture in Boston, Cycle-ytics was designed to help users explore how bike lanes and traffic patterns shape the cycling experience. By visualizing Bluebikes traffic alongside infrastructure data, the project aims to reveal insights about accessibility and encourage more people to get on their bikes."
+    "description": "Cycle-ytics is an interactive map that visualizes Bluebikes traffic, bike lane networks, and cycling accessibility across Boston and Cambridge.",
+    "story": "Inspired by the vibrant cycling culture in Boston, Cycle-ytics was designed to help users explore how bike lanes and traffic patterns shape the cycling experience. By visualizing Bluebikes traffic alongside infrastructure data, the project aims to reveal insights about accessibility and encourage more people to get on their bikes."
   }
 ]
