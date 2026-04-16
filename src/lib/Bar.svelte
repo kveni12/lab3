@@ -11,17 +11,14 @@
   let innerWidth = width - margin.left - margin.right;
   let innerHeight = height - margin.top - margin.bottom;
 
-  /* ✅ selection state */
   let selectedIndex = -1;
 
-  /* ✅ unified handler */
   function toggleBar(index, event) {
     if (!event.key || event.key === "Enter" || event.key === " ") {
       selectedIndex = index;
     }
   }
 
-  /* scales */
   $: xScale = d3.scaleBand()
     .domain(data.map(d => d.label))
     .range([0, innerWidth])
@@ -37,13 +34,11 @@
   $: colorScale = d3.scaleOrdinal(d3.schemeTableau10)
     .domain(data.map(d => d.label));
 
-  /* max bar for annotation */
   $: maxBar = d3.greatest(data, d => d.value);
 
   let xAxis;
   let yAxis;
 
-  /* axes */
   $: if (xAxis && yAxis) {
     d3.select(xAxis).call(d3.axisBottom(xScale));
 
@@ -91,10 +86,8 @@
           height={innerHeight - yScale(d.value)}
           fill={colorScale(d.label)}
 
-          /* selection */
           opacity={selectedIndex === -1 || selectedIndex === index ? 1 : 0.45}
 
-          /* interaction */
           tabindex="0"
           role="button"
           aria-label={`Year ${d.label}, ${d.value} projects`}
@@ -214,7 +207,6 @@
     font-style: italic;
   }
 
-  /* ✅ accessibility styles */
   rect {
     transition: 300ms;
     outline: none;
