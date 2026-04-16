@@ -11,14 +11,17 @@
   let innerWidth = width - margin.left - margin.right;
   let innerHeight = height - margin.top - margin.bottom;
 
+  // ✅ selected state
   let selectedIndex = -1;
 
+  // ✅ shared handler for click + keyboard
   function toggleBar(index, event) {
     if (!event.key || event.key === "Enter" || event.key === " ") {
       selectedIndex = index;
     }
   }
 
+  // scales
   $: xScale = d3.scaleBand()
     .domain(data.map(d => d.label))
     .range([0, innerWidth])
@@ -91,6 +94,8 @@
           tabindex="0"
           role="button"
           aria-label={`Year ${d.label}, ${d.value} projects`}
+          aria-pressed={selectedIndex === index}
+
           on:click={(e) => toggleBar(index, e)}
           on:keyup={(e) => toggleBar(index, e)}
         />
@@ -214,7 +219,7 @@
 
   svg:hover rect:not(:hover),
   .container:focus-within rect:not(:focus-visible) {
-    opacity: 50%;
+    opacity: 0.5;
   }
 
   rect:focus-visible {
