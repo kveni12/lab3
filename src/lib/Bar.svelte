@@ -11,10 +11,9 @@
   let innerWidth = width - margin.left - margin.right;
   let innerHeight = height - margin.top - margin.bottom;
 
-  // ✅ selected state
+  // selection state
   let selectedIndex = -1;
 
-  // ✅ shared handler for click + keyboard
   function toggleBar(index, event) {
     if (!event.key || event.key === "Enter" || event.key === " ") {
       selectedIndex = index;
@@ -54,9 +53,18 @@
 </script>
 
 <div class="container">
-  <svg viewBox={`0 0 ${width} ${height}`}>
+  <svg
+    viewBox={`0 0 ${width} ${height}`}
+    role="img"
+    aria-labelledby="bar-title bar-desc"
+  >
+    <!-- accessible title + description -->
+    <title id="bar-title">Projects by Year</title>
+    <desc id="bar-desc">
+      A bar chart showing the number of projects per year, with higher counts in recent years and the maximum occurring in the latest year.
+    </desc>
 
-    <!-- title -->
+    <!-- chart title -->
     <text
       x={width / 2}
       y="25"
@@ -80,7 +88,7 @@
         Number of Projects
       </text>
 
-      <!-- ✅ bars -->
+      <!-- bars -->
       {#each data as d, index}
         <rect
           x={xScale(d.label)}
@@ -101,7 +109,7 @@
         />
       {/each}
 
-      <!-- ✅ annotation -->
+      <!-- annotation -->
       {#if maxBar}
         <rect
           x={xScale(maxBar.label)}
