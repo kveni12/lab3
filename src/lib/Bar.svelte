@@ -11,7 +11,6 @@
   let innerWidth = width - margin.left - margin.right;
   let innerHeight = height - margin.top - margin.bottom;
 
-  // selection state
   let selectedIndex = -1;
 
   function toggleBar(index, event) {
@@ -20,7 +19,6 @@
     }
   }
 
-  // scales
   $: xScale = d3.scaleBand()
     .domain(data.map(d => d.label))
     .range([0, innerWidth])
@@ -37,6 +35,10 @@
     .domain(data.map(d => d.label));
 
   $: maxBar = d3.greatest(data, d => d.value);
+
+  $: description = `A bar chart showing project counts by year. ${
+    data.map(d => `${d.label}: ${d.value} projects`).join(", ")
+  }.`;
 
   let xAxis;
   let yAxis;
@@ -57,38 +59,33 @@
     viewBox={`0 0 ${width} ${height}`}
     role="img"
     aria-labelledby="bar-title bar-desc"
+    tabindex="0"
   >
-    <!-- accessible title + description -->
     <title id="bar-title">Projects by Year</title>
-    <desc id="bar-desc">
-      A bar chart showing the number of projects per year, with higher counts in recent years and the maximum occurring in the latest year.
-    </desc>
+    <desc id="bar-desc">{description}</desc>
 
-    <!-- chart title -->
     <text
       x={width / 2}
       y="25"
       text-anchor="middle"
-      class="chart-title">
+      class="chart-title"
+    >
       Projects per Year
     </text>
 
     <g transform={`translate(${margin.left},${margin.top})`}>
-
-      <!-- y axis -->
       <g bind:this={yAxis}></g>
 
-      <!-- y label -->
       <text
         transform="rotate(-90)"
         x={-innerHeight / 2}
         y={-50}
         text-anchor="middle"
-        class="axis-label">
+        class="axis-label"
+      >
         Number of Projects
       </text>
 
-      <!-- bars -->
       {#each data as d, index}
         <rect
           x={xScale(d.label)}
@@ -96,20 +93,16 @@
           width={xScale.bandwidth()}
           height={innerHeight - yScale(d.value)}
           fill={colorScale(d.label)}
-
           opacity={selectedIndex === -1 || selectedIndex === index ? 1 : 0.45}
-
           tabindex="0"
           role="button"
           aria-label={`Year ${d.label}, ${d.value} projects`}
           aria-pressed={selectedIndex === index}
-
           on:click={(e) => toggleBar(index, e)}
           on:keyup={(e) => toggleBar(index, e)}
         />
       {/each}
 
-      <!-- annotation -->
       {#if maxBar}
         <rect
           x={xScale(maxBar.label)}
@@ -133,30 +126,28 @@
           x={xScale(maxBar.label) + xScale.bandwidth() + 35}
           y={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
           dominant-baseline="middle"
-          class="annotation">
+          class="annotation"
+        >
           Year with most projects ({maxBar.label})
         </text>
       {/if}
 
-      <!-- x axis -->
       <g
         transform={`translate(0,${innerHeight})`}
-        bind:this={xAxis}>
-      </g>
+        bind:this={xAxis}
+      ></g>
 
-      <!-- x label -->
       <text
         x={innerWidth / 2}
         y={innerHeight + 40}
         text-anchor="middle"
-        class="axis-label">
+        class="axis-label"
+      >
         Year
       </text>
-
     </g>
   </svg>
 
-  <!-- legend -->
   <ul class="legend">
     {#each data as d}
       <li style="--color: {colorScale(d.label)}">
