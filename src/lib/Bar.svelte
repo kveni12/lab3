@@ -13,9 +13,17 @@
 
   let selectedIndex = -1;
 
+  // ✅ live region text
+  let liveText = "";
+
   function toggleBar(index, event) {
     if (!event.key || event.key === "Enter" || event.key === " ") {
       selectedIndex = index;
+
+      const d = data[index];
+      if (d) {
+        liveText = `${d.label}: ${d.value} projects selected.`;
+      }
     }
   }
 
@@ -36,6 +44,7 @@
 
   $: maxBar = d3.greatest(data, d => d.value);
 
+  // ✅ dynamic description
   $: description = `A bar chart showing project counts by year. ${
     data.map(d => `${d.label}: ${d.value} projects`).join(", ")
   }.`;
@@ -148,6 +157,9 @@
     </g>
   </svg>
 
+  <!-- ✅ live region -->
+  <p aria-live="polite" class="sr-only">{liveText}</p>
+
   <ul class="legend">
     {#each data as d}
       <li style="--color: {colorScale(d.label)}">
@@ -225,5 +237,13 @@
     stroke: white;
     stroke-width: 2px;
     stroke-dasharray: 4;
+  }
+
+  .sr-only {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 </style>
