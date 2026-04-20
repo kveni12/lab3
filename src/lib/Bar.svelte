@@ -13,8 +13,9 @@
 
   let selectedIndex = -1;
 
-  // ✅ live region text
+  // accessibility state
   let liveText = "";
+  let showChart = true;
 
   function toggleBar(index, event) {
     if (!event.key || event.key === "Enter" || event.key === " ") {
@@ -27,6 +28,14 @@
     }
   }
 
+  function toggleView() {
+    showChart = !showChart;
+    liveText = showChart
+      ? "Bar chart view shown."
+      : "Table view shown.";
+  }
+
+  // scales
   $: xScale = d3.scaleBand()
     .domain(data.map(d => d.label))
     .range([0, innerWidth])
@@ -44,7 +53,7 @@
 
   $: maxBar = d3.greatest(data, d => d.value);
 
-  // ✅ dynamic description
+  // dynamic description
   $: description = `A bar chart showing project counts by year. ${
     data.map(d => `${d.label}: ${d.value} projects`).join(", ")
   }.`;
@@ -63,112 +72,148 @@
   }
 </script>
 
-<div class="container">
-  <svg
-    viewBox={`0 0 ${width} ${height}`}
-    role="img"
-    aria-labelledby="bar-title bar-desc"
-    tabindex="0"
-  >
-    <title id="bar-title">Projects by Year</title>
-    <desc id="bar-desc">{description}</desc>
+<!-- toggle button -->
+<button
+  on:click={toggleView}
+  aria-pressed={!showChart}
+  aria-label="Toggle between bar chart and table view"
+  class="toggle-button"
+>
+  {showChart ? "Show Table" : "Show Chart"}
+</button>
 
-    <text
-      x={width / 2}
-      y="25"
-      text-anchor="middle"
-      class="chart-title"
+{#if showChart}
+  <div class="container">
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      role="img"
+      aria-labelledby="bar-title bar-desc"
+      tabindex="0"
     >
-      Projects per Year
-    </text>
-
-    <g transform={`translate(${margin.left},${margin.top})`}>
-      <g bind:this={yAxis}></g>
+      <title id="bar-title">Projects by Year</title>
+      <desc id="bar-desc">{description}</desc>
 
       <text
-        transform="rotate(-90)"
-        x={-innerHeight / 2}
-        y={-50}
+        x={width / 2}
+        y="25"
         text-anchor="middle"
-        class="axis-label"
+        class="chart-title"
       >
-        Number of Projects
+        Projects per Year
       </text>
 
-      {#each data as d, index}
-        <rect
-          x={xScale(d.label)}
-          y={yScale(d.value)}
-          width={xScale.bandwidth()}
-          height={innerHeight - yScale(d.value)}
-          fill={colorScale(d.label)}
-          opacity={selectedIndex === -1 || selectedIndex === index ? 1 : 0.45}
-          tabindex="0"
-          role="button"
-          aria-label={`Year ${d.label}, ${d.value} projects`}
-          aria-pressed={selectedIndex === index}
-          on:click={(e) => toggleBar(index, e)}
-          on:keyup={(e) => toggleBar(index, e)}
-        />
-      {/each}
-
-      {#if maxBar}
-        <rect
-          x={xScale(maxBar.label)}
-          y={yScale(maxBar.value)}
-          width={xScale.bandwidth()}
-          height={innerHeight - yScale(maxBar.value)}
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        />
-
-        <line
-          x1={xScale(maxBar.label) + xScale.bandwidth()}
-          y1={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
-          x2={xScale(maxBar.label) + xScale.bandwidth() + 30}
-          y2={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
-          stroke="currentColor"
-        />
+      <g transform={`translate(${margin.left},${margin.top})`}>
+        <g bind:this={yAxis}></g>
 
         <text
-          x={xScale(maxBar.label) + xScale.bandwidth() + 35}
-          y={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
-          dominant-baseline="middle"
-          class="annotation"
+          transform="rotate(-90)"
+          x={-innerHeight / 2}
+          y={-50}
+          text-anchor="middle"
+          class="axis-label"
         >
-          Year with most projects ({maxBar.label})
+          Number of Projects
         </text>
-      {/if}
 
-      <g
-        transform={`translate(0,${innerHeight})`}
-        bind:this={xAxis}
-      ></g>
+        {#each data as d, index}
+          <rect
+            x={xScale(d.label)}
+            y={yScale(d.value)}
+            width={xScale.bandwidth()}
+            height={innerHeight - yScale(d.value)}
+            fill={colorScale(d.label)}
+            opacity={selectedIndex === -1 || selectedIndex === index ? 1 : 0.45}
+            tabindex="0"
+            role="button"
+            aria-label={`Year ${d.label}, ${d.value} projects`}
+            aria-pressed={selectedIndex === index}
+            on:click={(e) => toggleBar(index, e)}
+            on:keyup={(e) => toggleBar(index, e)}
+          />
+        {/each}
 
-      <text
-        x={innerWidth / 2}
-        y={innerHeight + 40}
-        text-anchor="middle"
-        class="axis-label"
-      >
-        Year
-      </text>
-    </g>
-  </svg>
+        {#if maxBar}
+          <rect
+            x={xScale(maxBar.label)}
+            y={yScale(maxBar.value)}
+            width={xScale.bandwidth()}
+            height={innerHeight - yScale(maxBar.value)}
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          />
 
-  <!-- ✅ live region -->
+          <line
+            x1={xScale(maxBar.label) + xScale.bandwidth()}
+            y1={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
+            x2={xScale(maxBar.label) + xScale.bandwidth() + 30}
+            y2={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
+            stroke="currentColor"
+          />
+
+          <text
+            x={xScale(maxBar.label) + xScale.bandwidth() + 35}
+            y={yScale(maxBar.value) + (innerHeight - yScale(maxBar.value)) / 2}
+            dominant-baseline="middle"
+            class="annotation"
+          >
+            Year with most projects ({maxBar.label})
+          </text>
+        {/if}
+
+        <g
+          transform={`translate(0,${innerHeight})`}
+          bind:this={xAxis}
+        ></g>
+
+        <text
+          x={innerWidth / 2}
+          y={innerHeight + 40}
+          text-anchor="middle"
+          class="axis-label"
+        >
+          Year
+        </text>
+      </g>
+    </svg>
+
+    <!-- live region -->
+    <p aria-live="polite" class="sr-only">{liveText}</p>
+
+    <!-- legend -->
+    <ul class="legend">
+      {#each data as d}
+        <li style="--color: {colorScale(d.label)}">
+          <span class="swatch"></span>
+          {d.label} <em>({d.value})</em>
+        </li>
+      {/each}
+    </ul>
+  </div>
+
+{:else}
+  <!-- accessible table -->
+  <table aria-label="Table showing project counts by year" class="data-table">
+    <caption>Projects by Year</caption>
+    <thead>
+      <tr>
+        <th scope="col">Year</th>
+        <th scope="col">Projects</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each data as d, i}
+        <tr>
+          <th scope="row" id="row-{i}">{d.label}</th>
+          <td aria-labelledby="row-{i}">{d.value}</td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+
+  <!-- still announce changes -->
   <p aria-live="polite" class="sr-only">{liveText}</p>
-
-  <ul class="legend">
-    {#each data as d}
-      <li style="--color: {colorScale(d.label)}">
-        <span class="swatch"></span>
-        {d.label} <em>({d.value})</em>
-      </li>
-    {/each}
-  </ul>
-</div>
+{/if}
 
 <style>
   svg {
@@ -237,6 +282,35 @@
     stroke: white;
     stroke-width: 2px;
     stroke-dasharray: 4;
+  }
+
+  .toggle-button {
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+
+  .data-table {
+    margin-top: 1rem;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 30em;
+  }
+
+  .data-table caption {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    text-align: left;
+  }
+
+  .data-table th,
+  .data-table td {
+    border: 1px solid #ccc;
+    padding: 0.5em;
+  }
+
+  .data-table th {
+    background-color: #f0f0f0;
   }
 
   .sr-only {
