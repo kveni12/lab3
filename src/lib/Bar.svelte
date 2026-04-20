@@ -48,8 +48,9 @@
     .range([innerHeight, 0])
     .nice();
 
-  $: colorScale = d3.scaleOrdinal(d3.schemeTableau10)
-    .domain(data.map(d => d.label));
+  $: colorScale = d3.scaleOrdinal()
+  .domain(data.map(d => d.label))
+  .range(d3.quantize(d3.interpolateBlues, data.length));
 
   $: maxBar = d3.greatest(data, d => d.value);
 
@@ -122,6 +123,7 @@
             width={xScale.bandwidth()}
             height={innerHeight - yScale(d.value)}
             fill={colorScale(d.label)}
+            stroke="black"
             opacity={selectedIndex === -1 || selectedIndex === index ? 1 : 0.45}
             tabindex="0"
             role="button"
@@ -271,6 +273,8 @@
   rect {
     transition: 300ms;
     outline: none;
+    stroke: black;
+    stroke-width: 1;
   }
 
   svg:hover rect:not(:hover),
