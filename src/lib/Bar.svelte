@@ -281,7 +281,7 @@
   }
 
   svg:hover rect:not(:hover),
-  .container:focus-within rect:not(:focus-visible) {
+  .container:focus-within rect:not(:focus) {
     opacity: 0.4;
   }
 
