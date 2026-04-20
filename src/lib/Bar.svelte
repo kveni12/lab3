@@ -283,9 +283,10 @@
   }
 
   rect:focus-visible {
-    stroke: white;
-    stroke-width: 2px;
+    stroke: black;
+    stroke-width: 3px;
     stroke-dasharray: 4;
+    outline: none;
   }
 
   .toggle-button {
