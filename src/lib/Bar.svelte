@@ -276,10 +276,13 @@
     stroke: black;
     stroke-width: 1;
   }
+  rect:hover {
+    stroke-width: 2;
+  }
 
   svg:hover rect:not(:hover),
   .container:focus-within rect:not(:focus-visible) {
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
   rect:focus-visible {
